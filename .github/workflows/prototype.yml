@@ -1,0 +1,51 @@
+name: Prototype CI/CD
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  test-and-package:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+
+      - uses: actions/setup-python@v7
+        with:
+          python-version: '3.10'
+
+      - name: Run Python tests
+        run: python -m unittest -v
+
+      - uses: actions/setup-java@v6
+        with:
+          distribution: temurin
+          java-version: '11'
+
+      - name: Build Java and run self-tests
+        run: |
+          mkdir -p build/classes build/package
+          javac -encoding UTF-8 -d build/classes Main.java
+          jar --create --file build/package/warehouse.jar --main-class Main -C build/classes .
+          java -jar build/package/warehouse.jar --test
+
+      - name: Prepare distribution
+        run: cp README.md app.py core.py schema.sql test_prototype.py Main.java build/package/
+
+      - name: Upload distribution ZIP
+        uses: actions/upload-artifact@v7
+        with:
+          name: warehouse-prototype
+          path: build/package/
+          if-no-files-found: error
+          retention-days: 14
