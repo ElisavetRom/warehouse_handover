@@ -1,0 +1,6 @@
+__pycache__/
+*.pyc
+*.class
+*.sqlite3
+*.sqlite3-*
+build/
