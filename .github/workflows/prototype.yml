@@ -1,4 +1,5 @@
-name: Prototype CI/CD
+name: CI/CD
+
 
 on:
   push:

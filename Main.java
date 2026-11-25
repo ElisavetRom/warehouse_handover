@@ -1,3 +1,5 @@
+import java.io.Console;
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
@@ -24,7 +26,7 @@ public final class Main {
         boolean overlaps(Period other) {
             return start.isBefore(other.end) && other.start.isBefore(end);
         }
-        @Override public String toString() { return start + " → " + end; }
+        @Override public String toString() { return start + " - " + end; }
     }
 
     abstract static class RentalUnit {
@@ -257,7 +259,7 @@ public final class Main {
                 int min = args.length>3 ? Integer.parseInt(args[3]) : 0;
                 String kind = args.length>4 ? args[4] : "";
                 for (RentalUnit u : service.catalog(min,kind)) {
-                    System.out.printf("%d %s %s | %s | %d м² | %s%n",u.id,u.code,u.name,u.kind(),u.area,
+                    System.out.printf("%d %s %s | %s | %d кв. м | %s%n",u.id,u.code,u.name,u.kind(),u.area,
                                       service.free(u.id,interval) ? "свободно" : "занято");
                 }
                 break;
@@ -306,8 +308,11 @@ public final class Main {
             return;
         }
         RentalService service = demo();
-        try (Scanner input = new Scanner(System.in, java.nio.charset.StandardCharsets.UTF_8.name())) {
-            System.out.println("Складской фонд · Java. Команды разделяются символом |. help — справка.");
+        Console console = System.console();
+        try (Scanner input = console == null
+                ? new Scanner(System.in, StandardCharsets.UTF_8)
+                : new Scanner(console.reader())) {
+            System.out.println("Складской фонд (Java). Команды разделяются символом |. Справка: help.");
             while (input.hasNextLine()) {
                 String line = input.nextLine().strip();
                 if (line.equals("exit")) break;
@@ -321,3 +326,4 @@ public final class Main {
         }
     }
 }
+

@@ -25,7 +25,7 @@
 Нужна JDK 11 или новее. Java-версия использует команды через символ | и хранит состояние в памяти до выхода.
 
     javac -encoding UTF-8 Main.java
-    java "-Dfile.encoding=UTF-8" Main
+    java Main
 
 Пример сессии:
 
@@ -41,7 +41,7 @@
 
     py -m unittest -v
     javac -encoding UTF-8 Main.java
-    java "-Dfile.encoding=UTF-8" Main --test
+    java Main --test
 
 test_prototype.py проверяет расчёты, переходы, ограничения SQLite и сценарии консольного меню. Тесты создают временные базы. Самопроверка Java находится в методе selfTest() в Main.java.
 
